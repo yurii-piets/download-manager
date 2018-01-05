@@ -2,5 +2,4 @@
 -compile([export_all]).
 
 main() ->
-  Manger = spawn(manager, start, []),
-  shell:start(Manger).
+  console:start().
