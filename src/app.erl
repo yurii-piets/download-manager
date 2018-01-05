@@ -2,5 +2,5 @@
 -compile([export_all]).
 
 main() ->
-  Manager = spawn(manager, start, []),
+  Manager = manager:start(),
   console:start(Manager).
