@@ -3,13 +3,14 @@
 
 start() ->
   Queue = queue:new(),
-  spawn(manager, do, [Queue]).
+  spawn(manager, queue, [Queue]).
 
-do(Queue) ->
+queue(Queue) ->
   receive
     {start, Link, Dir} ->
-      io:format("~p~n", [Link]),
-      io:format("~p~n", [Dir]);
-    _ -> io:fwrite("Unknow command received in queue.")
-  end,
-  do(Queue).
+      NewQueue = Queue:in({Link, Dir}),
+      queue(NewQueue);
+    _ ->
+      io:fwrite("Unknow command received in queue."),
+      queue(Queue)
+  end.
