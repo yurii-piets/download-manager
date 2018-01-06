@@ -21,7 +21,7 @@ manage(Queue, List) ->
           manage(NewQueue, List)
       end;
     {finish, Tuple} ->
-      NewList = lists:delete(List, Tuple),
+      NewList = lists:delete(Tuple, List),
 
       case queue:out(Queue) of
         {{value, Item}, NewQueue} ->
@@ -37,5 +37,5 @@ manage(Queue, List) ->
   end.
 
 
-start_download({Link, Dir}) ->
-  io:format("Dowloading ~p~n~p~n", [Link, Dir]).
+start_download(Tuple) ->
+  download:start(Tuple, self()).
