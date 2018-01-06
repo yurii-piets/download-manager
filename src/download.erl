@@ -9,13 +9,14 @@ begin_download({Link, Dir}, Manager) ->
   Response = httpc:request(get, {Link, []}, [], []),
   case Response of
     {ok, {{_, 200, "OK"}, _, Body}} ->
-      save_body(),
+      FileName = "download.pdf",
+      save_body(Body, Dir, FileName),
       Manager ! {finish, {Link, Dir}};
     _ ->
       io:format("Unkreconbizable response for link ~p~n", [Link])
   end
 .
 
-save_body() ->
-%  todo save body to file
-  erlang:error(not_implemented).
+save_body(Content, Dir, FileName) ->
+  Path = Dir ++ FileName,
+  file:write_file(Path, Content).
