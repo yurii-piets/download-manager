@@ -36,6 +36,9 @@ manage(Queue, Map) ->
       NewMap = maps:remove(Link, Map),
       io:format("~n[DONE] ~p~n", [Link]),
       download_from_queue(Queue, NewMap);
+    list ->
+      list_downloads(Map),
+      manage(Queue, Map);
     _ ->
       io:fwrite("Unknow command received in queue."),
       manage(Queue, Map)
@@ -53,3 +56,12 @@ download_from_queue(Queue, List) ->
 
 start_download(Tuple) ->
   download:start(Tuple, self()).
+
+list_downloads(Map) ->
+  io:format("~n"),
+  Keys = maps:keys(Map),
+  lists:foreach(
+    fun(Item) ->
+      io:format("~p~n", [Item]) end,
+    Keys
+  ).

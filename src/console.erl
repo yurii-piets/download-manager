@@ -3,6 +3,7 @@
 
 -define(START_PATTERN, "start -l .* -d .*").
 -define(STOP_PATTERN, "stop -l .*").
+-define(LIST_PATTERN, "list").
 
 start(Manager) ->
   do(Manager).
@@ -22,6 +23,8 @@ process(Line, Manager) ->
     stop ->
       Link = parseLink(Line),
       Manager ! {stop, Link};
+    list ->
+      Manager ! list;
     _ ->
       io:fwrite("Wrong command")
   end.
@@ -29,11 +32,14 @@ process(Line, Manager) ->
 parseType(Line) ->
   MatchesStart = matches_pattern(Line, ?START_PATTERN),
   MatchesStop = matches_pattern(Line, ?STOP_PATTERN),
+  MatchesList = matches_pattern(Line, ?LIST_PATTERN),
   if
     MatchesStart ->
       start;
     MatchesStop ->
       stop;
+    MatchesList ->
+      list;
     true ->
       unknown
   end.
