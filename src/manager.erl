@@ -22,6 +22,8 @@ manage(Queue, List) ->
       end;
     {finish, Tuple} ->
       NewList = lists:delete(Tuple, List),
+      {Link, _} = Tuple,
+      io:format("~n[DONE] ~p~n", [Link]),
 
       case queue:out(Queue) of
         {{value, Item}, NewQueue} ->
