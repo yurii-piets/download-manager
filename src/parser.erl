@@ -1,6 +1,6 @@
 -module(parser).
 -compile([export_all]).
--define(FILE_NAME_PATTERN, ".{1,}\..{1,}").
+-define(FILE_NAME_PATTERN, ".{1,}\\..{1,}").
 -define(ATTACHMENT_FILE_NAME_PATTERN, "filename=\".*\"").
 -define(HTTP_PATTERN, "^http://.*").
 -define(HTTPS_PATTERN, "^https://.*").
