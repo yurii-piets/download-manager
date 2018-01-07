@@ -4,40 +4,52 @@
 
 start() ->
   Queue = queue:new(),
-  List = [],
+  List = maps:new(),
   spawn(manager, manage, [Queue, List]).
 
-manage(Queue, List) ->
+manage(Queue, Map) ->
   receive
-    {start, Tuple} ->
-      ListLength = length(List),
+    {start, {Link, Dir}} ->
+      MapSize = maps:size(Map),
       if
-        ListLength < ?MAX_DOWNLOADS ->
-          start_download(Tuple),
-          NewList = lists:append([Tuple], List),
-          manage(Queue, NewList);
+        MapSize < ?MAX_DOWNLOADS ->
+          DownloadPid = start_download({Link, Dir}),
+          NewMap = maps:put(Link, {Dir, DownloadPid}, Map),
+          manage(Queue, NewMap);
         true ->
-          NewQueue = queue:in(Queue, Tuple),
-          manage(NewQueue, List)
+          NewQueue = queue:in(Queue, {Link, Dir}),
+          manage(NewQueue, Map)
       end;
-    {finish, Tuple} ->
-      NewList = lists:delete(Tuple, List),
-      {Link, _} = Tuple,
+    {stop, Link} ->
+      ContainsLink = maps:is_key(Link, Map),
+      if
+        ContainsLink ->
+          {Dir, Pid} = maps:get(Link, Map),
+          NewMap = maps:remove(Link, Map),
+          exit(Pid, "Download interupted."),
+          download_from_queue(Queue, NewMap);
+        true ->
+          io:format("~nNo pending download for link.~n", []),
+          manage(Queue, Map)
+      end;
+    {finish, {Link, Dir}} ->
+      NewMap = maps:remove(Link, Map),
       io:format("~n[DONE] ~p~n", [Link]),
-
-      case queue:out(Queue) of
-        {{value, Item}, NewQueue} ->
-          start_download(Tuple),
-          NewList = lists:append(List, Item),
-          manage(NewQueue, NewList);
-        _ ->
-          manage(Queue, NewList)
-      end;
+      download_from_queue(Queue, NewMap);
     _ ->
       io:fwrite("Unknow command received in queue."),
-      manage(Queue, List)
+      manage(Queue, Map)
   end.
 
+download_from_queue(Queue, List) ->
+  case queue:out(Queue) of
+    {{value, Item}, NewQueue} ->
+      start_download(Item),
+      NewList = lists:append(List, Item),
+      manage(NewQueue, NewList);
+    _ ->
+      manage(Queue, List)
+  end.
 
 start_download(Tuple) ->
   download:start(Tuple, self()).

@@ -12,7 +12,8 @@ begin_download({Link, Dir}, Manager) ->
     {ok, {{_, 200, "OK"}, Headers, Body}} ->
       FileName = create_file_name(Link, Headers),
       save_file(Body, Dir, FileName),
-      Manager ! {finish, {Link, Dir}};
+      Manager ! {finish, {Link, Dir}},
+      exit(self(), "Download complete");
     _ ->
       io:format("Unreconbizable response for link ~p~n", [Link])
   end.
