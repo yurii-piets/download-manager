@@ -30,9 +30,9 @@ parseType(Line) ->
   MatchesStart = matches_pattern(Line, ?START_PATTERN),
   MatchesStop = matches_pattern(Line, ?STOP_PATTERN),
   if
-    MatchesStart == true ->
+    MatchesStart ->
       start;
-    MatchesStop == true ->
+    MatchesStop ->
       stop;
     true ->
       unknown
@@ -53,7 +53,7 @@ parseLink(Line) ->
 
 parseDir(Line) ->
   StartIndex = string:str(Line, "-d ") + 3,
-  LastIndex = string:length(Line) - 1,
+  LastIndex = string:length(Line),
   if
     StartIndex < LastIndex ->
       string:trim(string:sub_string(Line, StartIndex, LastIndex));
