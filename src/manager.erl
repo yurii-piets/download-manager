@@ -58,10 +58,15 @@ start_download(Tuple) ->
   download:start(Tuple, self()).
 
 list_downloads(Map) ->
-  io:format("~n"),
   Keys = maps:keys(Map),
-  lists:foreach(
-    fun(Item) ->
-      io:format("~p~n", [Item]) end,
-    Keys
-  ).
+  if
+    length(Keys) > 0 ->
+      io:format("~n"),
+      lists:foreach(
+        fun(Item) ->
+          io:format("~p~n", [Item]) end,
+        Keys
+      );
+    true ->
+      0
+  end.

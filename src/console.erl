@@ -9,24 +9,31 @@ start(Manager) ->
   do(Manager).
 
 do(Manager) ->
-  Line = io:get_line("Enter command> "),
+  io:format("Enter command> "),
+  Line = io:get_line(""),
   process(string:trim(Line), Manager),
   do(Manager).
 
 process(Line, Manager) ->
-  Type = parseType(Line),
-  case Type of
-    start ->
-      Link = parseLink(Line),
-      Dir = parseDir(Line),
-      Manager ! {start, {Link, Dir}};
-    stop ->
-      Link = parseLink(Line),
-      Manager ! {stop, Link};
-    list ->
-      Manager ! list;
-    _ ->
-      io:fwrite("Wrong command")
+  if
+    Line == "" ->
+      0;
+    true ->
+      Type = parseType(Line),
+      case Type of
+        start ->
+          Link = parseLink(Line),
+          Dir = parseDir(Line),
+          Manager ! {start, {Link, Dir}};
+        stop ->
+          Link = parseLink(Line),
+          Manager ! {stop, Link};
+        list ->
+          Manager ! list;
+        _ ->
+          io:fwrite("Wrong command~n")
+
+      end
   end.
 
 parseType(Line) ->
@@ -54,7 +61,7 @@ parseLink(Line) ->
       NewLastIndex = string:len(Line),
       string:trim(string:sub_string(Line, StartIndex, NewLastIndex));
     true ->
-      io:fwrite("Link cannot be empty")
+      io:fwrite("Link cannot be empty~n")
   end.
 
 parseDir(Line) ->
@@ -64,7 +71,7 @@ parseDir(Line) ->
     StartIndex < LastIndex ->
       string:trim(string:sub_string(Line, StartIndex, LastIndex));
     true ->
-      io:fwrite("Dir cannot be empty")
+      io:fwrite("Dir cannot be empty~n")
   end.
 
 matches_pattern(Line, Pattern) ->
