@@ -24,3 +24,4 @@ Example commands:
 * ``start -l https://pp.userapi.com/c841033/v841033056/57cea/UWbash21jvs.jpg -d C:/Users/plague/devnull/download/``
 * ``stop -l https://pp.userapi.com/c841033/v841033056/57cea/UWbash21jvs.jpg``
 * ``list``
+* ``queue``
