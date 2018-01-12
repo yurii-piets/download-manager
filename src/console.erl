@@ -4,6 +4,7 @@
 -define(START_PATTERN, "start -l .* -d .*").
 -define(STOP_PATTERN, "stop -l .*").
 -define(LIST_PATTERN, "list").
+-define(QUEUE_PATTERN, "queue").
 
 start(Manager) ->
   do(Manager).
@@ -30,6 +31,8 @@ process(Line, Manager) ->
           Manager ! {stop, Link};
         list ->
           Manager ! list;
+        queue ->
+          Manager ! queue;
         _ ->
           io:fwrite("Wrong command~n")
 
@@ -40,6 +43,7 @@ parseType(Line) ->
   MatchesStart = matches_pattern(Line, ?START_PATTERN),
   MatchesStop = matches_pattern(Line, ?STOP_PATTERN),
   MatchesList = matches_pattern(Line, ?LIST_PATTERN),
+  MatchesQueue = matches_pattern(Line, ?QUEUE_PATTERN),
   if
     MatchesStart ->
       start;
@@ -47,6 +51,8 @@ parseType(Line) ->
       stop;
     MatchesList ->
       list;
+    MatchesQueue ->
+      queue;
     true ->
       unknown
   end.

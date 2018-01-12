@@ -17,14 +17,14 @@ manage(Queue, Map) ->
           NewMap = maps:put(Link, {Dir, DownloadPid}, Map),
           manage(Queue, NewMap);
         true ->
-          NewQueue = queue:in(Queue, {Link, Dir}),
+          NewQueue = queue:in({Link, Dir}, Queue),
           manage(NewQueue, Map)
       end;
     {stop, Link} ->
       ContainsLink = maps:is_key(Link, Map),
       if
         ContainsLink ->
-          {Dir, Pid} = maps:get(Link, Map),
+          {_, Pid} = maps:get(Link, Map),
           NewMap = maps:remove(Link, Map),
           exit(Pid, "Download interupted."),
           download_from_queue(Queue, NewMap);
@@ -32,12 +32,15 @@ manage(Queue, Map) ->
           io:format("~nNo pending download for link.~n", []),
           manage(Queue, Map)
       end;
-    {finish, {Link, Dir}} ->
+    {finish, {Link, _}} ->
       NewMap = maps:remove(Link, Map),
       io:format("~n[DONE] ~p~n", [Link]),
       download_from_queue(Queue, NewMap);
     list ->
       list_downloads(Map),
+      manage(Queue, Map);
+    queue ->
+      list_queued_downloads(Queue),
       manage(Queue, Map);
     _ ->
       io:fwrite("Unknow command received in queue."),
@@ -64,9 +67,24 @@ list_downloads(Map) ->
       io:format("~n"),
       lists:foreach(
         fun(Item) ->
-          io:format("~p~n", [Item]) end,
+          io:format("[~p]~n", [Item]) end,
         Keys
       );
     true ->
-      0
+      io:format("~nList of downloads is empty.~n")
+  end.
+
+list_queued_downloads(Queue) ->
+  QueueIsEmpty = queue:is_empty(Queue),
+  if
+    QueueIsEmpty ->
+      io:format("~nNo queued download.~n");
+    true ->
+      io:format("~n"),
+      List = queue:to_list(Queue),
+      lists:foreach(
+        fun({Link, _}) ->
+          io:format("[~p]~n", [Link]) end,
+        List
+      )
   end.
