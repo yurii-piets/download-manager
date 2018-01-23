@@ -1,5 +1,6 @@
 -module(manager).
--compile([export_all]).
+-export([start/0, manage/2]).
+
 -define(MAX_DOWNLOADS, 8).
 
 start() ->
@@ -29,12 +30,12 @@ manage(Queue, Map) ->
           exit(Pid, "Download interupted."),
           download_from_queue(Queue, NewMap);
         true ->
-          io:format("~nNo pending download for link.~n", []),
+          io:format("~nNo pending download for link.~nEnter command> ", []),
           manage(Queue, Map)
       end;
     {finish, {Link, _}} ->
       NewMap = maps:remove(Link, Map),
-      io:format("~n[DONE] ~p~n", [Link]),
+      io:format("~n[DONE] ~p~nEnter command> ", [Link]),
       download_from_queue(Queue, NewMap);
     list ->
       list_downloads(Map),
@@ -43,7 +44,7 @@ manage(Queue, Map) ->
       list_queued_downloads(Queue),
       manage(Queue, Map);
     _ ->
-      io:fwrite("Unknow command received in queue."),
+      io:fwrite("~nUnknow command received in queue.~nEnter command> "),
       manage(Queue, Map)
   end.
 
@@ -67,24 +68,24 @@ list_downloads(Map) ->
       io:format("~n"),
       lists:foreach(
         fun(Item) ->
-          io:format("[~p]~n", [Item]) end,
+          io:format("~n [~p]~nEnter command> ", [Item]) end,
         Keys
       );
     true ->
-      io:format("~nList of downloads is empty.~n")
+      io:format("~nList of downloads is empty.~nEnter command> ")
   end.
 
 list_queued_downloads(Queue) ->
   QueueIsEmpty = queue:is_empty(Queue),
   if
     QueueIsEmpty ->
-      io:format("~nNo queued download.~n");
+      io:format("~nNo queued download.~nEnter command> ");
     true ->
       io:format("~n"),
       List = queue:to_list(Queue),
       lists:foreach(
         fun({Link, _}) ->
-          io:format("[~p]~n", [Link]) end,
+          io:format("[~p]~nEnter command> ", [Link]) end,
         List
       )
   end.

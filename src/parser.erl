@@ -1,5 +1,6 @@
 -module(parser).
--compile([export_all]).
+-export([file_name_from_header/1, file_name_from_link/1]).
+
 -define(FILE_NAME_PATTERN, ".{1,}\\..{1,}").
 -define(ATTACHMENT_FILE_NAME_PATTERN, "filename=\".*\"").
 -define(HTTP_PATTERN, "^http://.*").
@@ -39,7 +40,7 @@ file_name(FileName) ->
       NameWithOutScopes;
     nomatch ->
       ""
-end.
+  end.
 
 
 get_first_from_list([H | _]) -> H.

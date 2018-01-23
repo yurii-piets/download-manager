@@ -1,5 +1,5 @@
 -module(app).
--compile([export_all]).
+-export([main/0]).
 
 main() ->
   Manager = manager:start(),

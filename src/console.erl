@@ -1,5 +1,5 @@
 -module(console).
--compile([export_all]).
+-export([start/1]).
 
 -define(START_PATTERN, "start -l .* -d .*").
 -define(STOP_PATTERN, "stop -l .*").
@@ -67,7 +67,7 @@ parseLink(Line) ->
       NewLastIndex = string:len(Line),
       string:trim(string:sub_string(Line, StartIndex, NewLastIndex));
     true ->
-      io:fwrite("Link cannot be empty~n")
+      io:fwrite("Link cannot be empty~nEnter command> ")
   end.
 
 parseDir(Line) ->
@@ -77,7 +77,7 @@ parseDir(Line) ->
     StartIndex < LastIndex ->
       string:trim(string:sub_string(Line, StartIndex, LastIndex));
     true ->
-      io:fwrite("Dir cannot be empty~n")
+      io:fwrite("Dir cannot be empty~nEnter command> ")
   end.
 
 matches_pattern(Line, Pattern) ->

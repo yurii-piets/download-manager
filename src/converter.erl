@@ -1,5 +1,5 @@
 -module(converter).
--compile([export_all]).
+-export([content_type_to_file_extension/1]).
 
 content_type_to_file_extension(ContentType) ->
   case ContentType of

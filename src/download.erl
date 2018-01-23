@@ -1,5 +1,5 @@
 -module(download).
--compile([export_all]).
+-export([start/2, begin_download/2]).
 -define(CONTENT_TYPE, "content-type").
 
 start(Tuple, Manager) ->
@@ -15,7 +15,7 @@ begin_download({Link, Dir}, Manager) ->
       Manager ! {finish, {Link, Dir}},
       exit(self(), "Download complete");
     _ ->
-      io:format("Unreconbizable response for link ~p~n", [Link])
+      io:format("Unreconbizable response for link ~p~nEnter command> ", [Link])
   end.
 
 save_file(Content, Dir, FileName) ->
