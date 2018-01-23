@@ -44,7 +44,7 @@ manage(Queue, Map) ->
       list_queued_downloads(Queue),
       manage(Queue, Map);
     _ ->
-      io:fwrite("~nUnknow command received in queue.~nEnter command> "),
+      io:fwrite("~n{ERROR}Unknow command received in queue.~nEnter command> "),
       manage(Queue, Map)
   end.
 
@@ -68,24 +68,26 @@ list_downloads(Map) ->
       io:format("~n"),
       lists:foreach(
         fun(Item) ->
-          io:format("~n [~p]~nEnter command> ", [Item]) end,
+          io:format("~n [~p]~n", [Item]) end,
         Keys
-      );
+      ),
+      io:format("Enter command> ");
     true ->
-      io:format("~nList of downloads is empty.~nEnter command> ")
+      io:format("~n[INFO] List of downloads is empty.~nEnter command> ")
   end.
 
 list_queued_downloads(Queue) ->
   QueueIsEmpty = queue:is_empty(Queue),
   if
     QueueIsEmpty ->
-      io:format("~nNo queued download.~nEnter command> ");
+      io:format("~n[INFO] No queued download.~nEnter command> ");
     true ->
       io:format("~n"),
       List = queue:to_list(Queue),
       lists:foreach(
         fun({Link, _}) ->
-          io:format("[~p]~nEnter command> ", [Link]) end,
+          io:format("[~p]~n", [Link]) end,
         List
-      )
+      ),
+      io:format("Enter command> ")
   end.

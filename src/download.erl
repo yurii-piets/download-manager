@@ -15,7 +15,7 @@ begin_download({Link, Dir}, Manager) ->
       Manager ! {finish, {Link, Dir}},
       exit(self(), "Download complete");
     _ ->
-      io:format("Unreconbizable response for link ~p~nEnter command> ", [Link])
+      io:format("~n[ERROR] Unreconbizable response for link ~p~nEnter command> ", [Link])
   end.
 
 save_file(Content, Dir, FileName) ->

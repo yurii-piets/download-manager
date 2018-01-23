@@ -34,7 +34,7 @@ process(Line, Manager) ->
         queue ->
           Manager ! queue;
         _ ->
-          io:fwrite("Wrong command~n")
+          io:fwrite("[ERROR] Wrong command~n")
 
       end
   end.
