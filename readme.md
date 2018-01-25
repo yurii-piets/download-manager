@@ -20,6 +20,11 @@ List of downloads that are waiting for download:
 ```
 Enter command> queue
 ```  
+
+Quit program (and terminate all pending downloads):
+``
+Enter command> quit
+``
  
 Example commands:
 
@@ -30,3 +35,4 @@ Example commands:
 * ``stop -l https://pp.userapi.com/c841033/v841033056/57cea/UWbash21jvs.jpg``
 * ``list``
 * ``queue``
+* ``quit``

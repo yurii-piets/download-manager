@@ -5,6 +5,7 @@
 -define(STOP_PATTERN, "stop -l .*").
 -define(LIST_PATTERN, "list").
 -define(QUEUE_PATTERN, "queue").
+-define(QUIT_PATTERN, "quit").
 
 start(Manager) ->
   do(Manager).
@@ -33,6 +34,9 @@ process(Line, Manager) ->
           Manager ! list;
         queue ->
           Manager ! queue;
+        quit ->
+          Manager ! quit,
+          exit(self());
         _ ->
           io:fwrite("[ERROR] Wrong command~n")
 
@@ -44,6 +48,8 @@ parseType(Line) ->
   MatchesStop = matches_pattern(Line, ?STOP_PATTERN),
   MatchesList = matches_pattern(Line, ?LIST_PATTERN),
   MatchesQueue = matches_pattern(Line, ?QUEUE_PATTERN),
+  MatchesQuit = matches_pattern(Line, ?QUIT_PATTERN),
+
   if
     MatchesStart ->
       start;
@@ -53,6 +59,8 @@ parseType(Line) ->
       list;
     MatchesQueue ->
       queue;
+    MatchesQuit ->
+      quit;
     true ->
       unknown
   end.

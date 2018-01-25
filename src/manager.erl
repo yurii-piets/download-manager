@@ -43,6 +43,9 @@ manage(Queue, Map) ->
     queue ->
       list_queued_downloads(Queue),
       manage(Queue, Map);
+    quit ->
+      stop_downloads(Map),
+      exit(self());
     _ ->
       io:fwrite("~n{ERROR}Unknow command received in queue.~nEnter command> "),
       manage(Queue, Map)
@@ -91,3 +94,11 @@ list_queued_downloads(Queue) ->
       ),
       io:format("Enter command> ")
   end.
+
+stop_downloads(Map) ->
+  Values = maps:values(Map),
+  lists:foreach(
+    fun({_, DownloadPid}) ->
+      exit(DownloadPid, "Download interrupted beacuse quit program requiered.") end,
+    Values
+  ).
